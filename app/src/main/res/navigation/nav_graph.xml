@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_inventory">
+    <fragment
+        android:id="@+id/navigation_inventory"
+        android:name="com.vhpg.popurrivault.ui.InventoryFragment"
+        android:label="@string/Inventory"
+
+        tools:layout="@layout/fragment_inventory" >
+        <action
+            android:id="@+id/action_navigation_inventory_to_addProductFragment"
+            app:destination="@id/addProductFragment"
+            app:popUpTo="@id/navigation_inventory"
+            app:popUpToInclusive="false" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_sales"
+        android:name="com.vhpg.popurrivault.ui.SalesFragment"
+        android:label="@string/Sales"
+        tools:layout="@layout/fragment_sales" />
+    <fragment
+        android:id="@+id/navigation_orders"
+        android:name="com.vhpg.popurrivault.ui.OrdersFragment"
+        android:label="@string/Orders"
+        tools:layout="@layout/fragment_orders" />
+    <fragment
+        android:id="@+id/navigation_config"
+        android:name="com.vhpg.popurrivault.ui.ConfigFragment"
+        android:label="@string/Config"
+        tools:layout="@layout/fragment_config" />
+    <fragment
+        android:id="@+id/addProductFragment"
+        android:name="com.vhpg.popurrivault.ui.AddProductFragment"
+        android:label="@string/newProduct" >
+        <argument
+            android:name="newProduct"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_addProductFragment_to_navigation_inventory"
+            app:destination="@id/navigation_inventory" />
+    </fragment>
+
+</navigation>

@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_sales"
+        android:icon="@drawable/ic_fav_menu"
+        android:title="@string/Sales" />
+    <item
+        android:id="@+id/navigation_inventory"
+        android:icon="@drawable/ic_home_menu"
+        android:title="@string/Inventory" />
+
+
+
+
+    <item
+        android:id="@+id/navigation_orders"
+        android:icon="@drawable/ic_notif_menu"
+        android:title="@string/Orders" />
+
+    <item
+        android:id="@+id/navigation_config"
+        android:icon="@drawable/ic_mail_menu"
+        android:title="@string/Config" />
+</menu>

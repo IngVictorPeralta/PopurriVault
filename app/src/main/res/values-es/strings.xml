@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="Inventory">Inventario</string>
+    <string name="Sales">Ventas</string>
+    <string name="Orders">ordenes</string>
+    <string name="Config">Configuracion</string>
+
+
+
+    <string name="newProduct">Nuevo Producto</string>
+    <string name="save">Guardar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="description">Descripción</string>
+    <string name="name">Nombre</string>
+    <string name="cost">Costo</string>
+    <string name="price">Precio</string>
+    <string name="category">Categoria</string>
+    <string name="stock">Cantidad de inventario</string>
+    <string name="accesory">accesorio</string>
+    <string name="cap">Gorra</string>
+    <string name="pants">Pantalones</string>
+    <string name="shoes">Zapatos</string>
+    <string name="socks">Calcetines</string>
+    <string name="sweater">Suéter</string>
+    <string name="tshirt">Playera</string>
+    <string name="product_saved" >Producto guardado</string>
+    <string name="Error_not_saved_product">Error on saved product</string>
+    <string name="update">Actualizar</string>
+    <string name="delete">Eliminar</string>
+    <string name="Error_not_deleted_product">Error: No se elimino producto</string>
+
+    <string name="questionDeleteProduct">¿Realmente deseas eliminar el producto? : </string>
+    <string name="confirmation">Confirmación</string>
+    <string name="acept">aceptar</string>
+    <string name="del_product">Producto eliminado</string>
+    <string name="h">hil</string>
+    <string name="notCategory">Sin categoria</string>
+    <string name="priceVsCost">El precio debe ser mayor al costo</string>
+    <string name="addElement">Agregrar elemento</string>
+    <string name="noEntriesFound">¡No hay registros!</string>
+</resources>
