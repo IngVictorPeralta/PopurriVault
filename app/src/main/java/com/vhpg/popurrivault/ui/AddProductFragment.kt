@@ -1,7 +1,5 @@
 package com.vhpg.popurrivault.ui
 
-import android.app.AlertDialog
-import android.app.Dialog
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
@@ -9,20 +7,17 @@ import android.text.TextWatcher
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.*
-import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.vhpg.popurrivault.R
 import com.vhpg.popurrivault.application.PopurriVaultBDApp
 import com.vhpg.popurrivault.data.ProductRepository
+import com.vhpg.popurrivault.data.db.model.ContactEntity
 import com.vhpg.popurrivault.data.db.model.ProductEntity
 import com.vhpg.popurrivault.databinding.FragmentAddProductBinding
-import com.vhpg.popurrivault.databinding.ProductDialogBinding
-import com.vhpg.popurrivault.ui.adapters.ProductAdapter
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -52,6 +47,7 @@ class AddProductFragment(
 
     private lateinit var repository: ProductRepository
 
+    private lateinit var supplier: ContactEntity
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,7 +90,7 @@ class AddProductFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Ahora puedes acceder a las vistas usando binding.<nombreDeLaVista>
-        Toast.makeText(requireContext(),"Holoooo!", Toast.LENGTH_SHORT).show()
+        //Toast.makeText(requireContext(),"Holoooo!", Toast.LENGTH_SHORT).show()
 
         repository = (requireActivity().application as PopurriVaultBDApp).productRepository
 
@@ -172,6 +168,14 @@ class AddProductFragment(
             tietStock.setText(product.stock.toString())
 
 
+        }
+        binding.ivSupplier.setOnClickListener {
+            val dialog = ContactsDialog(
+                "SUPPLIER"
+            ) { supp ->
+                linkContact(supp)
+            }
+            dialog.show(parentFragmentManager,"contactsTable")
         }
     }
 
@@ -294,5 +298,12 @@ class AddProductFragment(
             .setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
             .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
             .show()
+    }
+
+    private fun linkContact(contact: ContactEntity){
+        supplier = contact
+        binding.apply {
+            tvNameSupplier.text = supplier.name
+        }
     }
 }

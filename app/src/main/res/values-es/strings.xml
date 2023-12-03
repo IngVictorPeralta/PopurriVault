@@ -39,4 +39,9 @@
     <string name="priceVsCost">El precio debe ser mayor al costo</string>
     <string name="addElement">Agregrar elemento</string>
     <string name="noEntriesFound">¡No hay registros!</string>
+    <string name="Suppliers">Proveedores</string>
+    <string name="email">email</string>
+    <string name="phoneNumber">Numero telefonico</string>
+    <string name="contact">contacto</string>
+    <string name="address">Direccion</string>
 </resources>
