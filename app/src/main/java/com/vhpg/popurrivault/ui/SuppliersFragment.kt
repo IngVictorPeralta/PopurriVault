@@ -1,4 +1,4 @@
-package com.vhpg.popurrivault.ui
+/*package com.vhpg.popurrivault.ui
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -14,14 +14,14 @@ import com.google.android.material.snackbar.Snackbar
 import com.vhpg.popurrivault.R
 import com.vhpg.popurrivault.application.PopurriVaultBDApp
 import com.vhpg.popurrivault.data.ProductRepository
-import com.vhpg.popurrivault.data.SupplierRepository
-import com.vhpg.popurrivault.data.db.dao.SupplierDao
+import com.vhpg.popurrivault.data.ContactRepository
+import com.vhpg.popurrivault.data.db.dao.ContactDao
 
-import com.vhpg.popurrivault.data.db.model.SupplierEntity
+import com.vhpg.popurrivault.data.db.model.ContactEntity
 
 import com.vhpg.popurrivault.databinding.FragmentSuppliersBinding
 
-import com.vhpg.popurrivault.ui.adapters.SupplierAdapter
+import com.vhpg.popurrivault.ui.adapters.ContactAdapter
 import kotlinx.coroutines.launch
 
 
@@ -29,10 +29,10 @@ class SuppliersFragment : Fragment() {
     private var _binding: FragmentSuppliersBinding? = null
     private val binding get() = _binding!!
 
-    private var suppliers: List<SupplierEntity> = emptyList()
-    private lateinit var repository: SupplierRepository
+    private var contacts: List<ContactEntity> = emptyList()
+    private lateinit var repository: ContactRepository
 
-    private lateinit var supplierAdapter: SupplierAdapter
+    private lateinit var contactAdapter: ContactAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,7 +68,7 @@ class SuppliersFragment : Fragment() {
                 // Aquí puedes realizar acciones mientras se está escribiendo la búsqueda
                 // Actualiza la lista según la nueva consulta (newText)
 
-                supplierAdapter.filterList(newText)
+                contactAdapter.filterList(newText)
 
                 return true
             }
@@ -97,17 +97,17 @@ class SuppliersFragment : Fragment() {
         // Ahora puedes acceder a las vistas usando binding.<nombreDeLaVista>
         Toast.makeText(requireContext(),"Holoooo!", Toast.LENGTH_SHORT).show()
 
-        repository = (requireActivity().application as PopurriVaultBDApp).supplierRepository
+        repository = (requireActivity().application as PopurriVaultBDApp).contactRepository
             //(requireActivity().application as PopurriVaultBDApp).repository
 
-        supplierAdapter = SupplierAdapter()
+        contactAdapter = ContactAdapter()
 
         /*productAdapter = ProductAdapter() { product ->
             productClicked(product)
         }*/
 
-        binding.rvSuppliers.apply {
-            adapter = supplierAdapter
+        binding.rvContacts.apply {
+            adapter = contactAdapter
             layoutManager = LinearLayoutManager(requireContext())
 
         }
@@ -154,4 +154,4 @@ class SuppliersFragment : Fragment() {
             .show()
     }
 
-}
+}*/

@@ -5,38 +5,38 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.vhpg.popurrivault.R
-import com.vhpg.popurrivault.data.db.model.ProductEntity
-import com.vhpg.popurrivault.data.db.model.SupplierEntity
-import com.vhpg.popurrivault.databinding.SupplierElementBinding
+import com.vhpg.popurrivault.data.db.model.ContactEntity
 
-class SupplierAdapter (
+import com.vhpg.popurrivault.databinding.ContactElementBinding
+
+class ContactAdapter (
     //private var onSupplierClick: (SupplierEntity) -> Unit
-): RecyclerView.Adapter<SupplierAdapter.ViewHolder>() {
-    private var suppliers: List<SupplierEntity> = emptyList()
-    private var filteredSuppliers: List<SupplierEntity> = emptyList()
+): RecyclerView.Adapter<ContactAdapter.ViewHolder>() {
+    private var contacts: List<ContactEntity> = emptyList()
+    private var filteredContacts: List<ContactEntity> = emptyList()
 
-    class ViewHolder(private val binding: SupplierElementBinding): RecyclerView.ViewHolder(binding.root){
+    class ViewHolder(private val binding: ContactElementBinding): RecyclerView.ViewHolder(binding.root){
         val ivIcon = binding.ivIcon
-        fun bind(supplier: SupplierEntity){
+        fun bind(contact: ContactEntity){
 
             binding.apply {
-                tvName.text = "${supplier.name}"
+                tvName.text = "${contact.name}"
                 ivIcon.setImageResource(R.drawable.cat4)
-                tvPhone.text = "${supplier.phoneNumber}"
-                tvEmail.text = "$ ${supplier.email}"
+                tvPhone.text = "${contact.phoneNumber}"
+                tvEmail.text = "${contact.email}"
             }
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = SupplierElementBinding.inflate(LayoutInflater.from(parent.context),parent, false)
+        val binding = ContactElementBinding.inflate(LayoutInflater.from(parent.context),parent, false)
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = filteredSuppliers.size
+    override fun getItemCount(): Int = filteredContacts.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(filteredSuppliers[position])
+        holder.bind(filteredContacts[position])
 
         /*holder.itemView.setOnClickListener {
             onProductClick(products[position])
@@ -46,18 +46,18 @@ class SupplierAdapter (
 
         }
     }
-    fun updateList(list: List<SupplierEntity>) {
-        suppliers = list
+    fun updateList(list: List<ContactEntity>) {
+        contacts = list
         filterList("")
     }
 
     fun filterList(query: String) {
         Log.d("Filtro","entrando al filtro con $query")
-        filteredSuppliers = if (query.isEmpty()) {
-            suppliers
+        filteredContacts = if (query.isEmpty()) {
+            contacts
         } else {
 
-            suppliers.filter { supplier ->
+            contacts.filter { supplier ->
                 // Puedes personalizar la lógica de filtrado según tus necesidades
                 supplier.name.contains(query, ignoreCase = true)
             }

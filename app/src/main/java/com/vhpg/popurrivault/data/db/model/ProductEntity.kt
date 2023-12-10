@@ -27,13 +27,16 @@ data class ProductEntity(
     var description: String,
 
     @ColumnInfo(name= "product_cost")
-    var cost: Int,
+    var cost: Double,
 
     @ColumnInfo(name= "product_price")
-    var price: Int,
+    var price: Double,
 
-    @ColumnInfo(name= "product_supplier")
+    @ColumnInfo(name= "product_category")
     var category: Int,
+
+    @ColumnInfo(name= "supplier_key")
+    var supplier: Long?,
 
     @ColumnInfo(name= "product_stock")
     var stock: Int

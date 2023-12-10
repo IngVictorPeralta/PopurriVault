@@ -29,10 +29,11 @@ class AddProductFragment(
     private var product: ProductEntity = ProductEntity(
         name = "",
         description = "",
-        cost = 0,
-        price = 0,
+        cost = 0.0,
+        price = 0.0,
         category = 0,
-        stock = 0
+        stock = 0,
+        supplier = null
     )
     var spinnerData = 0
     /*private val updateUI: () -> Unit
@@ -42,6 +43,7 @@ class AddProductFragment(
     private var _binding: FragmentAddProductBinding? = null
     private val binding get() = _binding!!
 
+    private var keySupplier: Long? = null
 
     private var saveButton: Button? = null
 
@@ -172,8 +174,8 @@ class AddProductFragment(
         binding.ivSupplier.setOnClickListener {
             val dialog = ContactsDialog(
                 "SUPPLIER"
-            ) { supp ->
-                linkContact(supp)
+            ) { keySupp,supp ->
+                linkContact(keySupp,supp)
             }
             dialog.show(parentFragmentManager,"contactsTable")
         }
@@ -262,10 +264,11 @@ class AddProductFragment(
     private fun InsertProduct(): Boolean{
         product.name = binding.tietName.text.toString()
         product.description = binding.tietDesc.text.toString()
-        product.cost = binding.tietCost.text.toString().toInt()
-        product.price = binding.tietPrice.text.toString().toInt()
+        product.cost = binding.tietCost.text.toString().toDouble()
+        product.price = binding.tietPrice.text.toString().toDouble()
         product.category = spinnerData
         product.stock = binding.tietStock.text.toString().toInt()
+        product.supplier = keySupplier
         return try{
             lifecycleScope.launch{
                 repository.insertProduct(product)
@@ -300,8 +303,9 @@ class AddProductFragment(
             .show()
     }
 
-    private fun linkContact(contact: ContactEntity){
+    private fun linkContact(keySupp:Long?,contact: ContactEntity){
         supplier = contact
+        keySupplier = keySupp
         binding.apply {
             tvNameSupplier.text = supplier.name
         }

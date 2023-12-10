@@ -8,11 +8,11 @@ import com.vhpg.popurrivault.util.Constants
 interface OrderDao {
     //Create
     @Insert
-    suspend fun insertOrder(order: OrderEntity)
+    suspend fun insertOrder(order: OrderEntity): Long
 
     //Read
     @Query("SELECT * FROM ${Constants.DATABASE_ORDERS_TABLE}")
-    suspend fun getAllOrders(): List<OrderEntity>
+    suspend fun getAllOrdersBySupplier(): List<OrderEntity>
 
     //Update
     @Update

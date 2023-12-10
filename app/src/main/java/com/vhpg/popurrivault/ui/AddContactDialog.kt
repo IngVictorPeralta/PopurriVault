@@ -15,29 +15,33 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.vhpg.popurrivault.R
 import com.vhpg.popurrivault.application.PopurriVaultBDApp
+import com.vhpg.popurrivault.data.ContactRepository
 import com.vhpg.popurrivault.data.ProductRepository
+import com.vhpg.popurrivault.data.db.model.ContactEntity
 import com.vhpg.popurrivault.data.db.model.ProductEntity
+import com.vhpg.popurrivault.databinding.AddContactDialogBinding
 import com.vhpg.popurrivault.databinding.ProductDialogBinding
 //import com.vhpg.popurrivault.util.CameraHelper
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-class ProductDialog(
-    private val newProduct: Boolean = true,
-    private var product: ProductEntity = ProductEntity(
+class AddContactDialog(
+    private val newContact: Boolean = true,
+    private val typeContact: String,
+    private var supplierKey: Long? = null,
+    private var contact: ContactEntity = ContactEntity(
         name = "",
-        description = "",
-        cost = 0.0,
-        price = 0.0,
-        category = 0,
-        stock = 0,
-        supplier = null
+        email = "",
+        phoneNumber = "",
+        address = "",
+        type = "",
+        creditLimit = 0.0
     ),
-    private val updateUI: () -> Unit,
-    private val message: (Int) -> Unit
+    private val linkContact: (Long?,ContactEntity) -> Unit
+
 ): DialogFragment() {
     //private lateinit var cameraHelper: CameraHelper
-    private var _binding: ProductDialogBinding? = null
+    private var _binding: AddContactDialogBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var builder: AlertDialog.Builder
@@ -45,89 +49,22 @@ class ProductDialog(
 
     private var saveButton: Button? = null
 
-    private lateinit var repository: ProductRepository
+    private lateinit var repository: ContactRepository
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        _binding = ProductDialogBinding.inflate(requireActivity().layoutInflater)
+        _binding = AddContactDialogBinding.inflate(requireActivity().layoutInflater)
 
-        repository = (requireContext().applicationContext as PopurriVaultBDApp).productRepository
+        repository = (requireContext().applicationContext as PopurriVaultBDApp).contactRepository
 
         builder = AlertDialog.Builder(requireContext())//,R.style.CustomDialog)
 
-        val spinner = binding.spCat
-            //findViewById<MaterialAutoCompleteTextView>(R.id.materialSpinner)
-        val datos = arrayListOf(
-            getString(R.string.notCategory),
-            getString(R.string.cap),
-            getString(R.string.pants),
-            getString(R.string.shoes),
-            getString(R.string.socks),
-            getString(R.string.sweater),
-            getString(R.string.tshirt),
-
-        )
-
-
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item,datos)
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        spinner.adapter = adapter
-
-        var spinnerData = 0
-        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                val itemSelected = position
-                val imageResource = when (position) {
-                    0-> R.drawable.cat0
-                    1 -> R.drawable.cat1
-                    2 -> R.drawable.cat2
-                    3 -> R.drawable.cat3
-                    4 -> R.drawable.cat4
-                    5 -> R.drawable.cat5
-                    6 -> R.drawable.cat6
-                    7 -> R.drawable.cat7
-                    else -> R.drawable.cat0
-                }
-                binding.apply {
-                    ivIcon.setImageResource(imageResource)
-                }
-
-                spinnerData = itemSelected
-
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-            }
-
-        }
-
-        val imageResource = when (product.category) {
-            0-> R.drawable.cat0
-            1 -> R.drawable.cat1
-            2 -> R.drawable.cat2
-            3 -> R.drawable.cat3
-            4 -> R.drawable.cat4
-            5 -> R.drawable.cat5
-            6 -> R.drawable.cat6
-            7 -> R.drawable.cat7
-            else -> R.drawable.cat0
-        }
 
         binding.apply {
 
-            tietName.setText(product.name)
-            tietDesc.setText(product.description)
-            tietCost.setText(product.cost.toString())
-            tietPrice.setText(product.price.toString())
-            spCat.setSelection(product.category)
-            tietStock.setText(product.stock.toString())
-
+            tietName.setText(contact.name)
+            tietEmail.setText(contact.email)
+            tietPhoneNumber.setText(contact.phoneNumber)
+            tietAddress.setText(contact.address)
 
         }
 
@@ -135,25 +72,25 @@ class ProductDialog(
             val cameraHelper = CameraHelper(this)
             cameraHelper.requestCameraPermission()
         }*/
-        dialog = if(newProduct){
+        dialog = if(newContact){
             buildDialog(getString(R.string.save),getString(R.string.cancel),{
                 //Create
-                product.name = binding.tietName.text.toString()
-                product.description = binding.tietDesc.text.toString()
-                product.cost = binding.tietCost.text.toString().toDouble()
-                product.price = binding.tietPrice.text.toString().toDouble()
-                product.category = spinnerData
-                product.stock = binding.tietStock.text.toString().toInt()
+                contact.name = "${binding.tietName.text}"
+                contact.email = "${binding.tietEmail.text}"
+                contact.phoneNumber = "${binding.tietPhoneNumber.text}"
+                contact.address = "${binding.tietAddress.text}"
+                contact.type = typeContact
+
+
                 try{
                     lifecycleScope.launch{
-                        repository.insertProduct(product)
+                        supplierKey =  repository.insertContact(contact)
                     }
-                    message(R.string.product_saved)
 
-                    updateUI()
+                    //message(R.string.product_saved)
+                    linkContact(supplierKey,contact)
                 }catch(e: IOException){
                     e.printStackTrace()
-                    message(R.string.Error_not_saved_product)
 
                 }
             },{
@@ -161,22 +98,22 @@ class ProductDialog(
             })
         }else{
             buildDialog(getString(R.string.update),getString(R.string.delete),{
-                product.name = binding.tietName.text.toString()
-                product.description = binding.tietDesc.text.toString()
-                product.cost = binding.tietCost.text.toString().toDouble()
-                product.price = binding.tietPrice.text.toString().toDouble()
-                product.category = spinnerData
-                product.stock = binding.tietStock.text.toString().toInt()
+                contact.name = "${binding.tietName.text}"
+                contact.email = "${binding.tietEmail.text}"
+                contact.phoneNumber = "${binding.tietPhoneNumber.text}"
+                contact.address = "${binding.tietAddress.text}"
+                contact.type = typeContact
+
                 try{
                     lifecycleScope.launch{
-                        repository.updateProduct(product)
+                        repository.updateContact(contact)
                     }
-                    message(R.string.product_saved)
+                    //message(R.string.product_saved)
                     //Toast.makeText(requireContext(), getString(R.string.product_saved), Toast.LENGTH_SHORT).show()
-                    updateUI()
+                    linkContact(supplierKey,contact)
                 }catch(e: IOException){
                     e.printStackTrace()
-                    message(R.string.Error_not_saved_product)
+                    //message(R.string.Error_not_saved_product)
                     //Toast.makeText(requireContext(), getString(R.string.Error_not_saved_product), Toast.LENGTH_SHORT).show()
                 }
             },{
@@ -184,19 +121,20 @@ class ProductDialog(
 
                 AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.confirmation))
-                    .setMessage(getString(R.string.questionDeleteProduct)+ product.name)
+                    .setMessage(getString(R.string.questionDeleteProduct)+ contact.name)
                     .setPositiveButton(getString(R.string.acept)){_,_ ->
 
                         try{
                             lifecycleScope.launch{
-                                repository.deleteProduct(product)
+                                repository.deleteContact(contact)
                             }
-                            message(R.string.del_product)
+                            //message(R.string.del_product)
                             //Toast.makeText(requireContext(), getString(R.string.product_deleted), Toast.LENGTH_SHORT).show()
-                            updateUI()
+                            //updateUI()
+
                         }catch(e: IOException){
                             e.printStackTrace()
-                            message(R.string.Error_not_deleted_product)
+                            //message(R.string.Error_not_deleted_product)
                             //Toast.makeText(requireContext(), getString(R.string.Error_not_deleted_product), Toast.LENGTH_SHORT).show()
                         }
 
@@ -267,7 +205,7 @@ class ProductDialog(
             }
 
         })
-        binding.tietDesc.addTextChangedListener(object: TextWatcher {
+        binding.tietEmail.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -281,7 +219,7 @@ class ProductDialog(
             }
 
         })
-        binding.tietCost.addTextChangedListener(object: TextWatcher {
+        binding.tietPhoneNumber.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -295,7 +233,7 @@ class ProductDialog(
             }
 
         })
-        binding.tietPrice.addTextChangedListener(object: TextWatcher {
+        binding.tietAddress.addTextChangedListener(object: TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -309,36 +247,23 @@ class ProductDialog(
             }
 
         })
-        binding.tietStock.addTextChangedListener(object: TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                saveButton?.isEnabled = validateFields()
-            }
-
-        })
     }
 
     private fun validateFields(): Boolean{
         var Ok = true
         Ok = Ok && binding.tietName.text.toString().isNotEmpty()
-        Ok = Ok && binding.tietDesc.text.toString().isNotEmpty()
-        Ok = Ok && binding.tietCost.text.toString().isNotEmpty()
-        Ok = Ok && binding.tietPrice.text.toString().isNotEmpty()
-        Ok = Ok && binding.tietStock.text.toString().isNotEmpty()
-        if(Ok) {
+        Ok = Ok && binding.tietEmail.text.toString().isNotEmpty()
+        Ok = Ok && binding.tietPhoneNumber.text.toString().isNotEmpty()
+        Ok = Ok && binding.tietAddress.text.toString().isNotEmpty()
+
+        /*if(Ok) {
             var priceVsCost = binding.tietCost.text.toString().toInt() < binding.tietPrice.text.toString().toInt()
             if (!priceVsCost) {
                 messageDialog(getString(R.string.priceVsCost))
             }
             Ok = Ok && priceVsCost
-        }
+        }*/
         return(Ok)
     }
     private fun messageDialog(text: String){
@@ -354,7 +279,7 @@ class ProductDialog(
         negativeButton: () -> Unit
     ): Dialog =
         builder.setView(binding.root)
-            .setTitle(getString(R.string.newProduct))
+            .setTitle(getString(R.string.contact))
             .setPositiveButton(btn1Text,DialogInterface.OnClickListener { dialog, which ->
                 positiveButton()
             })
