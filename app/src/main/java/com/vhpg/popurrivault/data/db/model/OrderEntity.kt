@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.vhpg.popurrivault.util.Constants
+import java.time.LocalDate
 
 @Entity(tableName =  Constants.DATABASE_ORDERS_TABLE)
 data class OrderEntity(
@@ -12,14 +13,20 @@ data class OrderEntity(
     val id: Long = 0,
 
     @ColumnInfo(name= "id_supplier")
-    val idSupplier: Long, // Foreign key de Proveedor
+    var idSupplier: Long?, // Foreign key de Proveedor
 
     @ColumnInfo(name= "order_date_arrive")
-    val dateArrive: Long,
+    var dateArrive: Long,
+
+    @ColumnInfo(name= "order_arrived")
+    var arrived: Boolean,
 
     @ColumnInfo(name= "order_description")
-    val description: String,
+    var description: String,
 
     @ColumnInfo(name= "order_date_create")
-    val dateMov: Long,
+    var dateOrder: Long,
+
+    @ColumnInfo(name= "order_cost_create")
+    var cost: Double,
 )

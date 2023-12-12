@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="150dp"
-    android:layout_height="150dp"
+    android:layout_height="200dp"
     android:background="#EEEEEE"
     android:padding="8dp">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_height="200dp"
         android:layout_margin="4dp"
         android:elevation="32dp"
         app:cardCornerRadius="8dp"
@@ -20,22 +20,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/ivIcon"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_margin="2dp"
-                android:contentDescription="Imagen"
-                android:outlineProvider="bounds"
-                android:padding="4dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cat0"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+            android:layout_height="match_parent">
 
             <TextView
                 android:id="@+id/tvName"
@@ -51,35 +36,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 android:gravity="center"
                 tools:text="@string/name" />
-
             <ImageView
-                android:id="@+id/ivRestock"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:contentDescription="Restock"
+                android:id="@+id/ivIcon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_margin="2dp"
+                android:contentDescription="Imagen producto"
                 android:outlineProvider="bounds"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/cat0"
 
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                />
-            <ImageView
-                android:id="@+id/ivDelete"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_margin="5dp"
-                android:contentDescription="Delete"
-                android:outlineProvider="bounds"
-                android:padding="4dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/cat0"
+                app:layout_constraintTop_toBottomOf="@id/tvName"
+                app:layout_constraintEnd_toEndOf="parent" />
 
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                />
+
+
 
 
             <TextView
@@ -92,25 +65,35 @@
                 android:gravity="start"
                 android:textSize="16sp"
                 android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="parent"
-
-                app:layout_constraintStart_toEndOf="@id/ivIcon"
-                tools:text="@string/stock" />
+                android:foregroundGravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivIcon"
+                tools:text="#" />
 
             <TextView
                 android:id="@+id/tvPrice"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="end"
                 android:textSize="16sp"
                 android:textStyle="italic"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/tvStock"
-                tools:text="@string/price" />
 
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivIcon"
+                tools:text="$" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Haz clic"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                />
 
 
 

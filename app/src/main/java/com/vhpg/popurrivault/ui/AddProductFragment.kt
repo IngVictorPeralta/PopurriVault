@@ -179,6 +179,11 @@ class AddProductFragment(
             }
             dialog.show(parentFragmentManager,"contactsTable")
         }
+
+        binding.ivCameraLaunch.setOnClickListener {
+            val dialog = CameraDialog()
+            dialog.show(parentFragmentManager,"newPhoto")
+        }
     }
 
     override fun onDestroyView() {

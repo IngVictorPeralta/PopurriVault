@@ -20,12 +20,20 @@
         android:id="@+id/navigation_sales"
         android:name="com.vhpg.popurrivault.ui.SalesFragment"
         android:label="@string/Sales"
-        tools:layout="@layout/fragment_sales" />
+        tools:layout="@layout/fragment_sales" >
+        <action
+            android:id="@+id/action_navigation_sales_to_selectProductsFragment"
+            app:destination="@id/selectProductsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_orders"
         android:name="com.vhpg.popurrivault.ui.OrdersFragment"
         android:label="@string/Orders"
-        tools:layout="@layout/fragment_orders" />
+        tools:layout="@layout/fragment_orders" >
+        <action
+            android:id="@+id/action_navigation_orders_to_addOrderFragment"
+            app:destination="@id/addOrderFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_config"
         android:name="com.vhpg.popurrivault.ui.ConfigFragment"
@@ -42,6 +50,22 @@
         <action
             android:id="@+id/action_addProductFragment_to_navigation_inventory"
             app:destination="@id/navigation_inventory" />
+    </fragment>
+    <fragment
+        android:id="@+id/addOrderFragment"
+        android:name="com.vhpg.popurrivault.ui.AddOrderFragment"
+        android:label="AddOrderFragment" >
+        <action
+            android:id="@+id/action_addOrderFragment_to_navigation_orders"
+            app:destination="@id/navigation_orders" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectProductsFragment"
+        android:name="com.vhpg.popurrivault.ui.SelectProductsFragment"
+        android:label="Selecciona productos" >
+        <action
+            android:id="@+id/action_selectProductsFragment_to_navigation_sales"
+            app:destination="@id/navigation_sales" />
     </fragment>
 
 </navigation>
