@@ -116,7 +116,13 @@ class OrdersFragment : Fragment() {
                     }))
                     .addToBackStack(null)
                     .commit()*/
-                findNavController().navigate(R.id.action_navigation_orders_to_addOrderFragment)
+                val typeSel = "ORDER"
+                val action = OrdersFragmentDirections.actionNavigationOrdersToSelectProductsFragment(typeSel)
+                findNavController().navigate(action)
+
+
+
+
                 //Toast.makeText(this@MainActivity, "Nuevo", Toast.LENGTH_SHORT).show()
                 return true
             }
@@ -179,7 +185,7 @@ class OrdersFragment : Fragment() {
         }
     }
 
-    private fun productClicked(product: ProductEntity){
+    /*private fun productClicked(product: ProductEntity){
         //message()
         //Toast.makeText(this, "Click en el producto: ${product.name}", Toast.LENGTH_SHORT).show()
         val dialog = ProductDialog(newProduct = false, product = product, updateUI = {
@@ -189,7 +195,7 @@ class OrdersFragment : Fragment() {
         })
         dialog.show(childFragmentManager, "dialog")
 
-    }
+    }*/
 
     private fun message(id:Int){
         Snackbar.make(binding.cl, getString(id), Snackbar.LENGTH_SHORT)

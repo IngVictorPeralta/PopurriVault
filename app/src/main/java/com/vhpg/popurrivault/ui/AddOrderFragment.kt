@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.*
@@ -11,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.android.material.snackbar.Snackbar
 import com.vhpg.popurrivault.R
 import com.vhpg.popurrivault.application.PopurriVaultBDApp
@@ -20,17 +22,14 @@ import com.vhpg.popurrivault.data.db.model.ContactEntity
 import com.vhpg.popurrivault.data.db.model.OrderEntity
 import com.vhpg.popurrivault.data.db.model.ProductEntity
 import com.vhpg.popurrivault.databinding.FragmentAddOrderBinding
-import com.vhpg.popurrivault.databinding.FragmentAddProductBinding
+
 import kotlinx.coroutines.launch
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 
-class AddOrderFragment(
-
-
-): Fragment() {
+class AddOrderFragment: Fragment() {
     private val newOrder: Boolean = true
     private val order: OrderEntity = OrderEntity(
         idSupplier = null,
@@ -40,7 +39,7 @@ class AddOrderFragment(
         cost = 0.0,
         arrived = false
     )
-
+    private lateinit var selectedProducts: MutableList<ProductEntity>
     /*private val updateUI: () -> Unit
     private val message: (Int) -> Unit*/
 
@@ -52,7 +51,7 @@ class AddOrderFragment(
 
     private var saveButton: Button? = null
 
-    private var products: List<ProductEntity> = emptyList()
+    //private var products: List<ProductEntity> = emptyList()
     private lateinit var repository: RestockRepository
 
     private lateinit var supplier: ContactEntity
@@ -64,6 +63,7 @@ class AddOrderFragment(
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAddOrderBinding.inflate(inflater, container, false)
+
         setHasOptionsMenu(true)
         return binding.root
     }
@@ -102,7 +102,9 @@ class AddOrderFragment(
         super.onViewCreated(view, savedInstanceState)
         // Ahora puedes acceder a las vistas usando binding.<nombreDeLaVista>
         //Toast.makeText(requireContext(),"Holoooo!", Toast.LENGTH_SHORT).show()
-
+        val args: AddOrderFragmentArgs by navArgs()
+        selectedProducts = args.selectedProducts.toMutableList()
+        Log.d("selectedProducts","${selectedProducts.count()}")
         repository = (requireActivity().application as PopurriVaultBDApp).restockRepository
 
 
@@ -210,10 +212,10 @@ class AddOrderFragment(
         order.dateArrive = selectedMilliseconds
 
         order.arrived = binding.arrived.isChecked
-
+        Log.d("order","$order")
         return try{
             lifecycleScope.launch{
-                repository.createRestock(order,products)
+                repository.createRestock(order,selectedProducts)
 
             }
             true

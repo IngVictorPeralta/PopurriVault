@@ -86,14 +86,14 @@
                 />
             <ImageView
                 android:id="@+id/ivRestock"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_margin="1dp"
                 android:contentDescription="Restock"
                 android:outlineProvider="bounds"
                 android:padding="2dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/cat0"
+                android:src="@drawable/order"
                 app:layout_constraintVertical_bias="0.16"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/ivDelete"

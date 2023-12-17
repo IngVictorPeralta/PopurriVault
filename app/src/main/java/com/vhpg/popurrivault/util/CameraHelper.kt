@@ -26,7 +26,50 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
+class CameraHelper(private val context: Context) {
 
+    private val REQUEST_CAMERA_PERMISSION = 100
+    private val REQUEST_IMAGE_CAPTURE = 101
+    private var imageUri: Uri? = null
+
+    fun openCamera(fragment: Fragment) {
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, "MyPicture")
+        values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on ${System.currentTimeMillis()}")
+        imageUri = context.contentResolver.insert(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            values
+        )
+
+        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+
+        //cameraIntent.putExtra("android.intent.extras.CAMERA_FACING", Camera.CameraInfo.CAMERA_FACING_BACK)
+
+        // Configurar la relación de aspecto
+        //cameraIntent.putExtra("android.intent.extras.CAMERA_FACING", 1) // Cámara trasera (0 para la cámara frontal)
+        //cameraIntent.putExtra("android.intent.extras.CAMERA_FACING", 1) // Cámara trasera (0 para la cámara frontal)
+        //cameraIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", false)
+
+        // Establecer la relación de aspecto deseada (por ejemplo, 1:1 o 3:4)
+        //cameraIntent.putExtra("android.intent.extras.CAMERA_FACING", 1) // Cámara trasera (0 para la cámara frontal)
+        cameraIntent.putExtra("android.intent.extras.CAMERA_FACING", 1) // Cámara trasera (0 para la cámara frontal)
+        cameraIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", false)
+        cameraIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1) // Cámara trasera (0 para la cámara frontal)
+        cameraIntent.putExtra("android.intent.extras.LENS_FACING_BACK", 0) // Cámara trasera (0 para la cámara frontal)
+        cameraIntent.putExtra("android.intent.extras.CAMERA_FACING", 1) // Cámara trasera (0 para la cámara frontal)
+        cameraIntent.putExtra("android.intent.extras.LENS_FACING_BACK", 0) // Cámara trasera (0 para la cámara frontal)
+
+
+        fragment.startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
+    }
+
+    fun getImageUri(): Uri? {
+        return imageUri
+    }
+
+
+}
 
 
 /*class CameraHelper(private val context: Context) {

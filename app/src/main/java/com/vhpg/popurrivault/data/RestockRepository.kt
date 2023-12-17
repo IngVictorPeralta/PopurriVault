@@ -1,5 +1,6 @@
 package com.vhpg.popurrivault.data
 
+import android.util.Log
 import androidx.room.Transaction
 import com.vhpg.popurrivault.data.db.dao.MovementDao
 import com.vhpg.popurrivault.data.db.dao.OrderDao
@@ -12,7 +13,7 @@ class RestockRepository(
     private val movementDao: MovementDao
     ){
     @Transaction
-    suspend fun createRestock(order: OrderEntity,products: List<ProductEntity>):Long{
+    suspend fun createRestock(order: OrderEntity,products: MutableList<ProductEntity>):Long{
 
         products.forEach { product ->
             var mov = MovementEntity(
@@ -23,8 +24,9 @@ class RestockRepository(
                 typeMov = "IN",
                 amount = product.price
             )
-
+            Log.d("idProd_mov","${product.id}")
             movementDao.insertMovement(mov)
+
         }
 
        return orderDao.insertOrder(order)

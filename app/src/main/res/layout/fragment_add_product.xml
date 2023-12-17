@@ -44,6 +44,7 @@
 
                 android:scaleType="centerCrop"
                 android:src="@drawable/camera"
+                android:tint="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -57,6 +58,7 @@
 
                 android:scaleType="centerCrop"
                 android:src="@drawable/order"
+                android:tint="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -183,7 +185,7 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <RelativeLayout
+            <!--RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -214,7 +216,7 @@
                     >
 
                 </Spinner>
-            </RelativeLayout>
+            </RelativeLayout-->
 
 
             <com.google.android.material.textfield.TextInputLayout

@@ -22,14 +22,14 @@ import com.vhpg.popurrivault.databinding.ProductDialogBinding
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-class ProductDialog(
+/*class ProductDialog(
     private val newProduct: Boolean = true,
     private var product: ProductEntity = ProductEntity(
         name = "",
         description = "",
+        image="",
         cost = 0.0,
         price = 0.0,
-        category = 0,
         stock = 0,
         supplier = null
     ),
@@ -361,4 +361,4 @@ class ProductDialog(
             .setNegativeButton(btn2Text){_, _ ->
                 negativeButton()
             }.create()
-}
+}*/

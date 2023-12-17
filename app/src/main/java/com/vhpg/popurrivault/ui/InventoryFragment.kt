@@ -176,7 +176,7 @@ class InventoryFragment : Fragment() {
         }
     }
 
-    private fun productClicked(product: ProductEntity){
+    /*private fun productClicked(product: ProductEntity){
         //message()
         //Toast.makeText(this, "Click en el producto: ${product.name}", Toast.LENGTH_SHORT).show()
         val dialog = ProductDialog(newProduct = false, product = product, updateUI = {
@@ -186,7 +186,7 @@ class InventoryFragment : Fragment() {
         })
         dialog.show(childFragmentManager, "dialog")
 
-    }
+    }*/
 
     private fun message(id:Int){
         Snackbar.make(binding.cl, getString(id), Snackbar.LENGTH_SHORT)

@@ -1,6 +1,8 @@
 package com.vhpg.popurrivault.ui.adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.PorterDuff
 import android.util.Log
 import android.view.LayoutInflater
@@ -27,13 +29,14 @@ class OrderAdapter (
         fun bind(order: OrderEntity){
 
             binding.apply {
-                tvName.text = "${order.id}"
+                tvName.text = "${order.description}"
                 ivIcon.setImageResource(R.drawable.cat5)
                 if(order.arrived) {
                     progressBar.progress = 100
-                    val color = ContextCompat.getColor(progressBar.context, R.color.colorAccept)
+                    //val color = ContextCompat.getColor(progressBar.context, R.color.colorAccept)
+                    //var cl = Color.parseColor(R.color.colorAccept.toString())
                     //progressBar.indeterminateDrawable.setColorFilter(color, PorterDuff.Mode.SRC_IN)
-                    
+                    //progressBar.progressTintList = ColorStateList.valueOf(cl)
                 }else{
                     progressBar.progress =
                         (((Date().time - order.dateOrder ).toDouble() / (order.dateArrive - order.dateOrder).toDouble())*100).toInt()

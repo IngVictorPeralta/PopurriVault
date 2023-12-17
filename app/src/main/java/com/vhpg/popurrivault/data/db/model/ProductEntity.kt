@@ -1,11 +1,14 @@
 package com.vhpg.popurrivault.data.db.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.vhpg.popurrivault.util.Constants
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName =  Constants.DATABASE_PRODUCTS_TABLE)
+@Parcelize
 data class ProductEntity(
     /*"name": "guantes",
     *"price": 199.99,
@@ -26,14 +29,17 @@ data class ProductEntity(
     @ColumnInfo(name= "product_description")
     var description: String,
 
+    @ColumnInfo(name= "product_url_image")
+    var image: String,
+
     @ColumnInfo(name= "product_cost")
     var cost: Double,
 
     @ColumnInfo(name= "product_price")
     var price: Double,
 
-    @ColumnInfo(name= "product_category")
-    var category: Int,
+    //@ColumnInfo(name= "product_category")
+    //var category: Int,
 
     @ColumnInfo(name= "supplier_key")
     var supplier: Long?,
@@ -47,4 +53,4 @@ data class ProductEntity(
     //@ColumnInfo(name= "product_url")
     //val url: String
 
-)
+) : Parcelable

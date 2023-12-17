@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/selectProductsFragment"
+        android:id="@+id/navigation_sales"
         android:icon="@drawable/sales"
         android:title="@string/Sales" />
 

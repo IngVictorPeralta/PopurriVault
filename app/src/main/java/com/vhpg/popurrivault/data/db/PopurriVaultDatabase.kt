@@ -16,7 +16,7 @@ import com.vhpg.popurrivault.util.Constants
 
 @Database(
     entities = [ OrderEntity::class,ProductEntity::class,ContactEntity::class,MovementEntity::class],
-    version = 2,
+    version = 1,
     exportSchema = true,
 )
 abstract class PopurriVaultDatabase: RoomDatabase(){

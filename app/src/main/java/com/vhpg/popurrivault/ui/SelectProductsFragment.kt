@@ -2,24 +2,27 @@ package com.vhpg.popurrivault.ui
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.*
+import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.vhpg.popurrivault.R
 import com.vhpg.popurrivault.application.PopurriVaultBDApp
 import com.vhpg.popurrivault.data.ProductRepository
-import com.vhpg.popurrivault.data.db.PopurriVaultDatabase
 import com.vhpg.popurrivault.data.db.model.ProductEntity
-import com.vhpg.popurrivault.databinding.FragmentInventoryBinding
 import com.vhpg.popurrivault.databinding.FragmentSelectProductsBinding
-import com.vhpg.popurrivault.ui.adapters.ProductAdapter
+import com.vhpg.popurrivault.ui.adapters.ProductCompactAdapter
 import kotlinx.coroutines.launch
 
 
@@ -29,17 +32,25 @@ import kotlinx.coroutines.launch
  * Use the [SelectProductsFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SelectProductsFragment : Fragment() {
+class SelectProductsFragment: Fragment() {
+
+
     private var _binding: FragmentSelectProductsBinding? = null
     private val binding get() = _binding!!
 
+
+
+    private lateinit var typeSel:String
+
+
+    private var showCar = true
     private var products: List<ProductEntity> = emptyList()
-    private var selectedProducts: List<ProductEntity> = emptyList()
+    private var selectedProducts: MutableList<ProductEntity> = mutableListOf()
 
     private lateinit var repository: ProductRepository
 
-    private lateinit var productAdapter: ProductAdapter
-    private lateinit var selectedProductAdapter: ProductAdapter
+    private lateinit var productAdapter: ProductCompactAdapter
+    private lateinit var selectedProductAdapter: ProductCompactAdapter
 
 
     override fun onCreateView(
@@ -47,6 +58,9 @@ class SelectProductsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentSelectProductsBinding.inflate(inflater, container, false)
+
+        val args: SelectProductsFragmentArgs by navArgs()
+        typeSel = args.typeSel
         setHasOptionsMenu(true)
         return binding.root
 
@@ -54,7 +68,7 @@ class SelectProductsFragment : Fragment() {
 
     }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_inventory, menu)
+        inflater.inflate(R.menu.menu_select_products, menu)
         /*
 // Obtén la referencia al elemento de menú
         val menuItem = menu.findItem(R.id.action_add)
@@ -99,7 +113,7 @@ class SelectProductsFragment : Fragment() {
     }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_add -> {
+            R.id.action_see -> {
                 // Maneja el clic en el botón btAdd aquí
                 /*val dialog = ProductDialog(updateUI = {
                     updateUI()
@@ -118,8 +132,24 @@ class SelectProductsFragment : Fragment() {
                     }))
                     .addToBackStack(null)
                     .commit()*/
-                findNavController().navigate(R.id.action_navigation_inventory_to_addProductFragment)
+                //findNavController().navigate(R.id.action_navigation_inventory_to_addProductFragment)
+
                 //Toast.makeText(this@MainActivity, "Nuevo", Toast.LENGTH_SHORT).show()
+                if(showCar){
+                    binding.rvSelectedProducts.visibility = View.GONE
+                }else{
+                    binding.rvSelectedProducts.visibility = View.VISIBLE
+                }
+                showCar = showCar.not()
+                Log.d("showCar","${showCar}")
+                return true
+            }
+            R.id.finish -> {
+                val arrayProductList: Array<ProductEntity> = selectedProducts.toTypedArray()
+
+                val action = SelectProductsFragmentDirections.actionSelectProductsFragmentToAddOrderFragment(arrayProductList)
+                findNavController().navigate(action)
+
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
@@ -132,54 +162,65 @@ class SelectProductsFragment : Fragment() {
 
         repository = (requireActivity().application as PopurriVaultBDApp).productRepository
 
-        productAdapter = ProductAdapter()
+        productAdapter = ProductCompactAdapter("SEL"){product,typeCell ->
+            productEditList(product,typeCell)
+        }
 
-        selectedProductAdapter = ProductAdapter()
+        selectedProductAdapter = ProductCompactAdapter("NEW"){product,typeCell ->
+            productEditList(product,typeCell)
+        }
         /*productAdapter = ProductAdapter() { product ->
             productClicked(product)
         }*/
 
         binding.rvProducts.apply {
             adapter = productAdapter
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = GridLayoutManager(requireContext(), 3)
+            //LinearLayoutManager(requireContext())
 
         }
 
         binding.rvSelectedProducts.apply {
             adapter = selectedProductAdapter
-            layoutManager = LinearLayoutManager(requireContext())
+            layoutManager = GridLayoutManager(requireContext(), 3)
+                //LinearLayoutManager(requireContext())
 
         }
 
-        selectedProducts += ProductEntity(name = "a",
+        /*selectedProducts.add(ProductEntity(id = 1, name = "a",
+            description = "b",
+            cost = 0.0,
+            price = 0.0,
+            category = 0,
+            stock = 0,
+            supplier = null))
+       val a = ProductEntity(id=2,name = "ab",
+           description = "b",
+           cost = 0.0,
+           price = 0.0,
+           category = 0,
+           stock = 0,
+           supplier = null)
+        selectedProducts.add(a)
+
+        selectedProducts += ProductEntity(id=3,name = "ac",
             description = "b",
             cost = 0.0,
             price = 0.0,
             category = 0,
             stock = 0,
             supplier = null)
-        selectedProducts += ProductEntity(name = "ab",
+        selectedProducts += ProductEntity(id=4,name = "ad",
             description = "b",
             cost = 0.0,
             price = 0.0,
             category = 0,
             stock = 0,
-            supplier = null)
-        selectedProducts += ProductEntity(name = "ac",
-            description = "b",
-            cost = 0.0,
-            price = 0.0,
-            category = 0,
-            stock = 0,
-            supplier = null)
-        selectedProducts += ProductEntity(name = "ad",
-            description = "b",
-            cost = 0.0,
-            price = 0.0,
-            category = 0,
-            stock = 0,
-            supplier = null)
+            supplier = null)*/
         selectedProductAdapter.updateList(selectedProducts)
+
+
+        //productEditList(a,"NEW")
         /*binding.btAdd.setOnClickListener {
             val dialog = ProductDialog(updateUI = {
                 updateUI()
@@ -216,7 +257,105 @@ class SelectProductsFragment : Fragment() {
         }
     }
 
-    private fun productClicked(product: ProductEntity){
+    private fun productEditList(productClicked: ProductEntity, typeCell: String){
+        //val idOnChange:Long = 1
+        var positiveText: String = "Aceptar"
+        var negativeText: String = "Eliminar"
+        var titleText: String = "Agregar producto"
+        val initialStock: Int? = productClicked.stock
+        val editText = EditText(context).apply {
+            // Configura el tipo de entrada como número entero
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+        }
+        val stockEditText = EditText(context).apply {
+            // Configura el tipo de entrada como número entero
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+            hint = "Stock"
+            if(typeCell == "NEW"){
+                initialStock?.let { setText(it.toString()) }
+            }
+        }
+        val costEditText = EditText(context).apply {
+            // Configura el tipo de entrada como número decimal
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER or android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+
+            hint = "Costo"
+
+
+        }
+        val layoutIns = LinearLayout(context).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(stockEditText)
+            if(typeSel == "ORDER"){
+                addView(costEditText)
+            }
+        }
+
+        if(typeCell == "SEL"){
+            titleText = "Agregar producto"
+            positiveText = "Ingresar"
+            negativeText = "Cancelar"
+        }
+        if(typeCell == "NEW"){
+            titleText = "editar producto"
+            positiveText = "Actualizar"
+            negativeText = "Eliminar"
+        }
+        val dialog = AlertDialog.Builder(requireContext())
+            .setTitle(titleText)
+            .setView(layoutIns)
+            .setPositiveButton(positiveText) { _, _ ->
+                // Acción a realizar cuando se hace clic en Aceptar
+                val stock = stockEditText.text.toString().toIntOrNull()
+                val cost = editText.text.toString().toDoubleOrNull()
+                if (stock != null) {
+                    // Realiza la acción con el número ingresado
+                    // Puedes manejar el número (enteredNumber) aquí
+                    if(typeCell == "NEW") {
+                        if(cost!=null) {
+                            selectedProducts.filter { product ->
+                                if (product.id == productClicked.id) {
+                                    product.stock = stock
+                                    product.cost = cost
+                                    //selectedProducts.remove(productClicked)
+                                }
+                                true
+                            }
+                        }else{
+                            Toast.makeText(requireContext(), "El costo no es valido :)", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    if(typeCell == "SEL") {
+                        productClicked.stock = stock
+                        if(cost!=null) {
+                            productClicked.cost = cost
+                        }else{
+                            Toast.makeText(requireContext(), "El costo no es valido :)", Toast.LENGTH_SHORT).show()
+                        }
+                        selectedProducts.add(productClicked)
+                    }
+                    selectedProductAdapter.updateList(selectedProducts)
+                } else {
+                    // Manejar el caso en que la entrada no sea un número válido
+                    Toast.makeText(requireContext(), "La cantidad de inventario no es valido :)", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton(negativeText){ _ ,_ ->
+
+                Toast.makeText(requireContext(), "Eliminando ${productClicked.name}", Toast.LENGTH_SHORT).show()
+                if(typeCell == "NEW"){
+                    selectedProducts.remove(productClicked)
+                }
+                selectedProductAdapter.updateList(selectedProducts)
+            }
+            .create()
+
+        dialog.show()
+
+
+
+    }
+    /*private fun productClicked2(product: ProductEntity){
         //message()
         //Toast.makeText(this, "Click en el producto: ${product.name}", Toast.LENGTH_SHORT).show()
         val dialog = ProductDialog(newProduct = false, product = product, updateUI = {
@@ -226,7 +365,7 @@ class SelectProductsFragment : Fragment() {
         })
         dialog.show(childFragmentManager, "dialog")
 
-    }
+    }*/
 
     private fun message(id:Int){
         Snackbar.make(binding.cl, getString(id), Snackbar.LENGTH_SHORT)
