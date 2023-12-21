@@ -1,19 +1,27 @@
 package com.vhpg.popurrivault.ui
 
-import android.Manifest
-import android.content.ContentValues
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.provider.MediaStore
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.core.app.ActivityCompat
+import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
+import com.vhpg.popurrivault.R
+import com.vhpg.popurrivault.application.PopurriVaultBDApp
+import com.vhpg.popurrivault.data.RestockRepository
+import com.vhpg.popurrivault.data.SaleRepository
+import com.vhpg.popurrivault.data.db.model.OrderEntity
+import com.vhpg.popurrivault.data.db.model.SaleEntity
+import com.vhpg.popurrivault.databinding.FragmentOrdersBinding
 import com.vhpg.popurrivault.databinding.FragmentSalesBinding
+import com.vhpg.popurrivault.ui.adapters.OrderAdapter
+import com.vhpg.popurrivault.ui.adapters.SaleAdapter
+import kotlinx.coroutines.launch
 
 
 /**
@@ -22,9 +30,14 @@ import com.vhpg.popurrivault.databinding.FragmentSalesBinding
  * create an instance of this fragment.
  */
 class SalesFragment : Fragment() {
+    private var _binding: FragmentSalesBinding? = null
+    private val binding get() = _binding!!
 
+    private var sales: List<SaleEntity> = emptyList()
+    private lateinit var repository: SaleRepository
 
-    /*override fun onCreate(savedInstanceState: Bundle?) {
+    private lateinit var saleAdapter: SaleAdapter
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
     }
@@ -33,69 +46,161 @@ class SalesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sales, container, false)
-    }*/
-    private var _binding: FragmentSalesBinding? = null
-    private val binding get() = _binding!!
-
-    private val REQUEST_CAMERA_PERMISSION = 100
-    private val REQUEST_IMAGE_CAPTURE = 101
-    private var imageUri: Uri? = null
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
         _binding = FragmentSalesBinding.inflate(inflater, container, false)
+        setHasOptionsMenu(true)
         return binding.root
-        //return inflater.inflate(R.layout.fragment_sales, container, false)
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_inventory, menu)
+        /*
+// Obtén la referencia al elemento de menú
+        val menuItem = menu.findItem(R.id.action_add)
+
+// Cambia el color del icono
+        val icon: Drawable? = menuItem.icon
+        if (icon != null) {
+            DrawableCompat.setTint(icon, ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+            menuItem.icon = icon
+        }
+        */
+
+        for (i in 0 until menu.size()) {
+            val menuItem = menu.getItem(i)
+
+            // Cambia el color del icono
+            val icon: Drawable? = menuItem.icon
+            if (icon != null) {
+                DrawableCompat.setTint(icon, ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+                menuItem.icon = icon
+            }
+        }
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Aquí puedes realizar acciones cuando se envía la búsqueda (pulsar Enter)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String): Boolean {
+                // Aquí puedes realizar acciones mientras se está escribiendo la búsqueda
+                // Actualiza la lista según la nueva consulta (newText)
+
+                saleAdapter.filterList(newText)
+
+                return true
+            }
+        })
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_add -> {
+                // Maneja el clic en el botón btAdd aquí
+                /*val dialog = ProductDialog(updateUI = {
+                    updateUI()
+                },message = {text->
+                    message(text)
+
+                })
+                dialog.show(childFragmentManager,"dialog")*/
+
+                /*requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment_container, AddProductFragment(updateUI = {
+                        updateUI()
+                    },message = {text->
+                        message(text)
+
+                    }))
+                    .addToBackStack(null)
+                    .commit()*/
+                val typeSel = "SALE"
+                val action = SalesFragmentDirections.actionNavigationSalesToSelectProductsFragment(typeSel)
+                findNavController().navigate(action)
+
+
+
+
+                //Toast.makeText(this@MainActivity, "Nuevo", Toast.LENGTH_SHORT).show()
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Ahora puedes acceder a las vistas usando binding.<nombreDeLaVista>
+        //Toast.makeText(requireContext(),"Holoooo!",Toast.LENGTH_SHORT).show()
 
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.CAMERA),
-                REQUEST_CAMERA_PERMISSION
-            )
+        repository = (requireActivity().application as PopurriVaultBDApp).saleRepository
+
+        saleAdapter = SaleAdapter()
+
+        /*productAdapter = ProductAdapter() { product ->
+            productClicked(product)
+        }*/
+
+        binding.rvOrders.apply {
+            adapter = saleAdapter
+            layoutManager = LinearLayoutManager(requireContext())
+
         }
 
-        binding.btnCapture.setOnClickListener {
-            openCamera()
+        /*binding.btAdd.setOnClickListener {
+            val dialog = ProductDialog(updateUI = {
+                updateUI()
+            },message = {text->
+                message(text)
+
+            })
+            dialog.show(childFragmentManager,"dialog")
+            //Toast.makeText(this@MainActivity, "Nuevo", Toast.LENGTH_SHORT).show()
+        }*/
+        updateUI()
+
+
+    }
+    override fun onResume() {
+        super.onResume()
+        updateUI()
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+    private fun updateUI(){
+        lifecycleScope.launch{
+            sales = repository.getAllSales()
+            if(sales.isNotEmpty()){
+                binding.tvSinRegistros.visibility = View.INVISIBLE
+
+
+            }else{
+                binding.tvSinRegistros.visibility = View.VISIBLE
+            }
+            saleAdapter.updateList(sales)
         }
     }
 
-    private fun openCamera() {
-        val values = ContentValues()
-        values.put(MediaStore.Images.Media.TITLE, "MyPicture")
-        values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on ${System.currentTimeMillis()}")
-        imageUri = requireContext().contentResolver.insert(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            values
-        )
+    /*private fun productClicked(product: ProductEntity){
+        //message()
+        //Toast.makeText(this, "Click en el producto: ${product.name}", Toast.LENGTH_SHORT).show()
+        val dialog = ProductDialog(newProduct = false, product = product, updateUI = {
+            updateUI()
+        },message = {id->
+            message(id)
+        })
+        dialog.show(childFragmentManager, "dialog")
 
-        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-        startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE)
+    }*/
+
+    private fun message(id:Int){
+        Snackbar.make(binding.cl, getString(id), Snackbar.LENGTH_SHORT)
+            .setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
+            .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.colorPrimary))
+            .show()
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        binding.txt.text = "$imageUri"
-        binding.imageView.setImageURI(imageUri)
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == PackageManager.PERMISSION_GRANTED) {
-            // The photo is saved, you can do something with the imageUri if needed
-            // For example, display the image in an ImageView
-            binding.imageView.setImageURI(imageUri)
-        }
-    }
-
-
 }

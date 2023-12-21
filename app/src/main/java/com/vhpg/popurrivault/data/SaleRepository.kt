@@ -5,36 +5,38 @@ import androidx.room.Transaction
 import com.vhpg.popurrivault.data.db.dao.MovementDao
 import com.vhpg.popurrivault.data.db.dao.OrderDao
 import com.vhpg.popurrivault.data.db.dao.ProductDao
+import com.vhpg.popurrivault.data.db.dao.SaleDao
 import com.vhpg.popurrivault.data.db.model.MovementEntity
 import com.vhpg.popurrivault.data.db.model.OrderEntity
 import com.vhpg.popurrivault.data.db.model.ProductEntity
+import com.vhpg.popurrivault.data.db.model.SaleEntity
 
-class RestockRepository(
-    private val orderDao: OrderDao,
+class SaleRepository(
+    private val saleDao: SaleDao,
     private val movementDao: MovementDao,
     private val productDao: ProductDao
     ){
     @Transaction
-    suspend fun createRestock(order: OrderEntity,products: MutableList<ProductEntity>):Long{
+    suspend fun createSale(sale: SaleEntity,products: MutableList<ProductEntity>):Long{
         return try {
             products.forEach { product ->
                 var mov = MovementEntity(
                     idProduct = product.id,
-                    idOrder = order.id,
-                    idSale = null,
+                    idOrder = null,
+                    idSale = sale.id,
                     stock = product.stock,
-                    typeMov = "IN",
+                    typeMov = "OUT",
                     amount = product.cost,
-                    profit = -(product.cost*product.stock)
+                    profit = (product.price*product.stock)
                 )
                 Log.d("idProd_mov", "${product.id}")
                 movementDao.insertMovement(mov)
 
-                productDao.restockProduct(productId = product.id,product.stock,product.cost)
+                productDao.saleProduct(productId = product.id,product.stock)
 
             }
 
-            orderDao.insertOrder(order)
+            saleDao.insertSale(sale)
         }catch (e: Exception) {
             // Manejar cualquier excepción aquí
             Log.e("CreateRestock", "Error creating restock", e)
@@ -43,13 +45,13 @@ class RestockRepository(
     }
 
 
-    suspend fun getAllOrders(): List<OrderEntity> = orderDao.getAllOrdersBySupplier()
+    suspend fun getAllSales(): List<SaleEntity> = saleDao.getAllSalesByClient()
 
-    suspend fun updateOrder(order: OrderEntity){
-        orderDao.updateOrder(order)
+    suspend fun updateSale(sale: SaleEntity){
+        saleDao.updateSale(sale)
     }
 
-    suspend fun deleteOrder(order: OrderEntity){
-        orderDao.deleteOrder(order)
+    suspend fun deleteSale(sale: SaleEntity){
+        saleDao.deleteSale(sale)
     }
 }

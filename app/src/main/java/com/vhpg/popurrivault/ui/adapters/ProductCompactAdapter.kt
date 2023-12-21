@@ -14,6 +14,7 @@ import com.vhpg.popurrivault.databinding.ProductElementCompactBinding
 
 class ProductCompactAdapter(
     private val typeCell: String,
+    private val typeSel: String,
     private var onProductClick: (ProductEntity,String) -> Unit
 ): RecyclerView.Adapter<ProductCompactAdapter.ViewHolder>() {
     private var products: List<ProductEntity> = emptyList()
@@ -22,6 +23,9 @@ class ProductCompactAdapter(
     class ViewHolder(private val binding: ProductElementCompactBinding): RecyclerView.ViewHolder(binding.root){
         val ivIcon = binding.ivIcon
         val btAccion = binding.btAccion
+        val tvPrice = binding.tvPrice
+        var tvPriceValue: Double = 0.0
+        var tvCostValue: Double = 0.0
         fun bind(product: ProductEntity){
 
 
@@ -31,8 +35,9 @@ class ProductCompactAdapter(
                 ivIcon.setImageURI(product.image.toUri())
                 tvStock.text = product.stock.toString()
 
-                tvPrice.text = "$ ${product.price.toString()}"
-
+                //tvPrice.text = "$ ${product.price.toString()}"
+                tvCostValue = product.cost
+                tvPriceValue = product.price
 
             }
         }
@@ -57,12 +62,20 @@ class ProductCompactAdapter(
                 text = "+"
                 setBackgroundResource(R.color.colorAccept)
             }
+
         }
         if(typeCell=="NEW"){
             holder.btAccion.apply {
                 text = "-"
                 setBackgroundResource(R.color.colorDelete)
             }
+            //holder.tvPrice.text = "${holder.tvCostValue}"
+        }
+        if(typeSel == "SALE"){
+            holder.tvPrice.text = "${holder.tvPriceValue}"
+        }
+        if(typeSel == "ORDER") {
+            holder.tvPrice.text = "${holder.tvCostValue}"
         }
         holder.ivIcon.setOnClickListener {
 

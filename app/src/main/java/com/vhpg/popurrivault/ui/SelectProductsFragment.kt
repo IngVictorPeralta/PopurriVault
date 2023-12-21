@@ -162,11 +162,11 @@ class SelectProductsFragment: Fragment() {
 
         repository = (requireActivity().application as PopurriVaultBDApp).productRepository
 
-        productAdapter = ProductCompactAdapter("SEL"){product,typeCell ->
+        productAdapter = ProductCompactAdapter("SEL",typeSel){product,typeCell ->
             productEditList(product,typeCell)
         }
 
-        selectedProductAdapter = ProductCompactAdapter("NEW"){product,typeCell ->
+        selectedProductAdapter = ProductCompactAdapter("NEW",typeSel){product,typeCell ->
             productEditList(product,typeCell)
         }
         /*productAdapter = ProductAdapter() { product ->
@@ -307,20 +307,24 @@ class SelectProductsFragment: Fragment() {
             .setPositiveButton(positiveText) { _, _ ->
                 // Acción a realizar cuando se hace clic en Aceptar
                 val stock = stockEditText.text.toString().toIntOrNull()
-                val cost = editText.text.toString().toDoubleOrNull()
+                val cost = costEditText.text.toString().toDoubleOrNull()
                 if (stock != null) {
                     // Realiza la acción con el número ingresado
                     // Puedes manejar el número (enteredNumber) aquí
                     if(typeCell == "NEW") {
+                        Log.d("selectedProducts","COSTO : $cost")
                         if(cost!=null) {
                             selectedProducts.filter { product ->
                                 if (product.id == productClicked.id) {
                                     product.stock = stock
                                     product.cost = cost
                                     //selectedProducts.remove(productClicked)
+                                    Log.d("selectedProducts","product $product")
                                 }
+
                                 true
                             }
+                            Log.d("selectedProducts","$selectedProducts")
                         }else{
                             Toast.makeText(requireContext(), "El costo no es valido :)", Toast.LENGTH_SHORT).show()
                         }

@@ -4,6 +4,7 @@ import android.app.Application
 import com.vhpg.popurrivault.data.ContactRepository
 import com.vhpg.popurrivault.data.RestockRepository
 import com.vhpg.popurrivault.data.ProductRepository
+import com.vhpg.popurrivault.data.SaleRepository
 
 
 import com.vhpg.popurrivault.data.db.PopurriVaultDatabase
@@ -19,10 +20,14 @@ class PopurriVaultBDApp(): Application() {
     }
 
     val contactRepository by lazy {
-        ContactRepository(database.supplierDao())
+        ContactRepository(database.contactDao())
     }
 
     val restockRepository by lazy {
-        RestockRepository(database.orderDao(),database.movementDao())
+        RestockRepository(database.orderDao(),database.movementDao(),database.productDao())
+    }
+
+    val saleRepository by lazy {
+        SaleRepository(database.saleDao(),database.movementDao(),database.productDao())
     }
 }

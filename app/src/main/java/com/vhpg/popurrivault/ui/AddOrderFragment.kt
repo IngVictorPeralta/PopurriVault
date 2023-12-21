@@ -19,9 +19,11 @@ import com.vhpg.popurrivault.application.PopurriVaultBDApp
 import com.vhpg.popurrivault.data.ProductRepository
 import com.vhpg.popurrivault.data.RestockRepository
 import com.vhpg.popurrivault.data.db.model.ContactEntity
+import com.vhpg.popurrivault.data.db.model.MovementEntity
 import com.vhpg.popurrivault.data.db.model.OrderEntity
 import com.vhpg.popurrivault.data.db.model.ProductEntity
 import com.vhpg.popurrivault.databinding.FragmentAddOrderBinding
+import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -104,7 +106,15 @@ class AddOrderFragment: Fragment() {
         //Toast.makeText(requireContext(),"Holoooo!", Toast.LENGTH_SHORT).show()
         val args: AddOrderFragmentArgs by navArgs()
         selectedProducts = args.selectedProducts.toMutableList()
-        Log.d("selectedProducts","${selectedProducts.count()}")
+        var costOrder = 0.0
+        selectedProducts.forEach { product ->
+
+            costOrder+=product.cost*product.stock
+
+        }
+        order.cost = costOrder
+
+        Log.d("addOrder","selected products : $selectedProducts")
         repository = (requireActivity().application as PopurriVaultBDApp).restockRepository
 
 
@@ -213,7 +223,7 @@ class AddOrderFragment: Fragment() {
 
         order.arrived = binding.arrived.isChecked
         Log.d("order","$order")
-        return try{
+        /*return try{
             lifecycleScope.launch{
                 repository.createRestock(order,selectedProducts)
 
@@ -222,7 +232,19 @@ class AddOrderFragment: Fragment() {
         }catch(e: IOException){
             e.printStackTrace()
             false
+        }*/
+
+        lifecycleScope.launch(Dispatchers.IO){
+            try {
+                repository.createRestock(order, selectedProducts)
+                // Realizar acciones después de la creación del restock, si es necesario
+            } catch (e: IOException) {
+                e.printStackTrace()
+                // Manejar la excepción aquí
+            }
         }
+        return true
+
     }
     private fun validateFields(): Boolean{
         var Ok = true

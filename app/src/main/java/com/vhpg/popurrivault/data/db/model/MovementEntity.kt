@@ -22,6 +22,8 @@ data class MovementEntity(
     val typeMov: String, // Puede ser "entrada" o "salida" u otros tipos según tus necesidades
     @ColumnInfo(name= "amount_product")
     val amount: Double,
+    @ColumnInfo(name= "profit_movement")
+    val profit: Double,
 
 
 )

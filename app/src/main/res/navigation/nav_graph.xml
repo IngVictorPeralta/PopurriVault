@@ -20,7 +20,11 @@
         android:id="@+id/navigation_sales"
         android:name="com.vhpg.popurrivault.ui.SalesFragment"
         android:label="@string/Sales"
-        tools:layout="@layout/fragment_sales" />
+        tools:layout="@layout/fragment_sales" >
+        <action
+            android:id="@+id/action_navigation_sales_to_selectProductsFragment"
+            app:destination="@id/selectProductsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_orders"
         android:name="com.vhpg.popurrivault.ui.OrdersFragment"
@@ -60,7 +64,9 @@
         android:label="Selecciona productos" >
         <action
             android:id="@+id/action_selectProductsFragment_to_addOrderFragment"
-            app:destination="@id/addOrderFragment" />
+            app:destination="@id/addOrderFragment"
+            app:popUpTo="@id/navigation_orders"
+            app:popUpToInclusive="false" />
         <argument
             android:name="typeSel"
             app:argType="string" />
