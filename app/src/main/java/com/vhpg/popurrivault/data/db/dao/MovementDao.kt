@@ -9,6 +9,8 @@ interface MovementDao {
     //Create
     @Insert
     suspend fun insertMovement(mov: MovementEntity): Long
+
+
 /*
     //Read
     @Query("SELECT * FROM ${Constants.DATABASE_MOVEMENTS_TABLE}")

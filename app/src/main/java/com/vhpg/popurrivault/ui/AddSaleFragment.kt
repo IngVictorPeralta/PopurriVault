@@ -18,11 +18,10 @@ import com.vhpg.popurrivault.R
 import com.vhpg.popurrivault.application.PopurriVaultBDApp
 import com.vhpg.popurrivault.data.ProductRepository
 import com.vhpg.popurrivault.data.RestockRepository
-import com.vhpg.popurrivault.data.db.model.ContactEntity
-import com.vhpg.popurrivault.data.db.model.MovementEntity
-import com.vhpg.popurrivault.data.db.model.OrderEntity
-import com.vhpg.popurrivault.data.db.model.ProductEntity
+import com.vhpg.popurrivault.data.SaleRepository
+import com.vhpg.popurrivault.data.db.model.*
 import com.vhpg.popurrivault.databinding.FragmentAddOrderBinding
+import com.vhpg.popurrivault.databinding.FragmentAddSaleBinding
 import kotlinx.coroutines.Dispatchers
 
 import kotlinx.coroutines.launch
@@ -32,14 +31,14 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.*
 
-class AddOrderFragment: Fragment() {
-    private val newOrder: Boolean = true
-    private val order: OrderEntity = OrderEntity(
-        idSupplier = null,
+class AddSaleFragment: Fragment() {
+    private val newSale: Boolean = true
+    private val sale: SaleEntity = SaleEntity(
+        idClient = null,
         description = "",
         dateArrive = Date().time,
         dateOrder = Date().time,
-        cost = 0.0,
+        price = 0.0,
         arrived = false
     )
     private lateinit var selectedProducts: MutableList<ProductEntity>
@@ -47,17 +46,17 @@ class AddOrderFragment: Fragment() {
     private val message: (Int) -> Unit*/
 
     //private lateinit var cameraHelper: CameraHelper
-    private var _binding: FragmentAddOrderBinding? = null
+    private var _binding: FragmentAddSaleBinding? = null
     private val binding get() = _binding!!
 
-    private var keySupplier: Long? = null
+    private var keyClient: Long? = null
 
     private var saveButton: Button? = null
 
     //private var products: List<ProductEntity> = emptyList()
-    private lateinit var repository: RestockRepository
+    private lateinit var repository: SaleRepository
 
-    private lateinit var supplier: ContactEntity
+    private lateinit var client: ContactEntity
 
     private lateinit var datePicker: DatePicker
 
@@ -65,7 +64,7 @@ class AddOrderFragment: Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentAddOrderBinding.inflate(inflater, container, false)
+        _binding = FragmentAddSaleBinding.inflate(inflater, container, false)
 
         setHasOptionsMenu(true)
         return binding.root
@@ -92,7 +91,7 @@ class AddOrderFragment: Fragment() {
             R.id.action_save -> {
                 // Maneja el clic en el botón btAdd aquí
                 if(validateFields()){
-                    insertOrder()
+                    insertSale()
                     findNavController().navigateUp()
                 }
                 //Toast.makeText(requireContext(), "Nuevo producto", Toast.LENGTH_SHORT).show()
@@ -107,18 +106,18 @@ class AddOrderFragment: Fragment() {
         //Toast.makeText(requireContext(),"Holoooo!", Toast.LENGTH_SHORT).show()
         val args: AddOrderFragmentArgs by navArgs()
         selectedProducts = args.selectedProducts.toMutableList()
-        var costOrder = 0.0
+        var priceSale = 0.0
         selectedProducts.forEach { product ->
             val df = DecimalFormat("#.##")
 
-            costOrder += df.format(  product.cost*product.stock  ).toDouble()
-            //costOrder+=product.cost*product.stock
+            priceSale += df.format(  product.price*product.stock  ).toDouble()
+            //priceSale+=product.price*product.stock
 
         }
-        order.cost = costOrder
+        sale.price = priceSale
 
         Log.d("addOrder","selected products : $selectedProducts")
-        repository = (requireActivity().application as PopurriVaultBDApp).restockRepository
+        repository = (requireActivity().application as PopurriVaultBDApp).saleRepository
 
 
         // Obtener la fecha actual
@@ -141,8 +140,8 @@ class AddOrderFragment: Fragment() {
 
         binding.apply {
 
-            tietDesc.setText("${order.description}")
-            tietCost.setText("${order.cost}")
+            tietDesc.setText("${sale.description}")
+            tietCost.setText("${sale.price}")
             // Deshabilita el TextInputLayout
             tilCost.isEnabled = false
 
@@ -164,7 +163,7 @@ class AddOrderFragment: Fragment() {
         }
         binding.ivSupplier.setOnClickListener {
             val dialog = ContactsDialog(
-                "SUPPLIER"
+                "CLIENT"
             ) { keySupp,supp ->
                 linkContact(keySupp,supp)
             }
@@ -212,7 +211,7 @@ class AddOrderFragment: Fragment() {
         })
 
     }
-    private fun insertOrder(): Boolean{
+    private fun insertSale(): Boolean{
         val selectedDate = Calendar.getInstance()
         selectedDate.set(Calendar.YEAR, datePicker.year)
         selectedDate.set(Calendar.MONTH, datePicker.month)
@@ -221,15 +220,15 @@ class AddOrderFragment: Fragment() {
         // Obtener el valor long en milisegundos desde el DatePicker
         val selectedMilliseconds: Long = selectedDate.timeInMillis
 
-        order.description = "${binding.tietDesc.text}"
-        order.cost = binding.tietCost.text.toString().toDouble()
+        sale.description = "${binding.tietDesc.text}"
+        sale.price = binding.tietCost.text.toString().toDouble()
 
-        order.idSupplier = keySupplier
+        sale.idClient = keyClient
 
-        order.dateArrive = selectedMilliseconds
+        sale.dateArrive = selectedMilliseconds
 
-        order.arrived = binding.arrived.isChecked
-        Log.d("order","$order")
+        sale.arrived = binding.arrived.isChecked
+        Log.d("sale","$sale")
         /*return try{
             lifecycleScope.launch{
                 repository.createRestock(order,selectedProducts)
@@ -243,7 +242,7 @@ class AddOrderFragment: Fragment() {
 
         lifecycleScope.launch(Dispatchers.IO){
             try {
-                repository.createRestock(order, selectedProducts)
+                repository.createSale(sale, selectedProducts)
                 // Realizar acciones después de la creación del restock, si es necesario
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -253,6 +252,16 @@ class AddOrderFragment: Fragment() {
         return true
 
     }
+    /*private fun validateFields(): Boolean{
+        var Ok = true
+
+        Ok = Ok && binding.tietDesc.text.toString().isNotEmpty()
+        Ok = Ok && binding.tietCost.text.toString().isNotEmpty()
+
+
+        return(Ok)
+    }*/
+
     private fun validateFields(): Boolean{
         var isOk = true
 
@@ -281,6 +290,7 @@ class AddOrderFragment: Fragment() {
             false
         }
     }
+
     private fun messageDialog(text: String){
         Snackbar.make(binding.dial, text, Snackbar.LENGTH_SHORT)
             .setTextColor(ContextCompat.getColor(requireContext(), R.color.white))
@@ -288,12 +298,12 @@ class AddOrderFragment: Fragment() {
             .show()
     }
 
-    private fun linkContact(keySuppBack:Long?,contact: ContactEntity){
-        supplier = contact
-        keySupplier = keySuppBack
-        order.idSupplier = keySupplier
+    private fun linkContact(keyClientBack:Long?,contact: ContactEntity){
+        client = contact
+        keyClient = keyClientBack
+        sale.idClient = keyClient
         binding.apply {
-            tvNameSupplier.text = supplier.name
+            tvNameSupplier.text = client.name
 
         }
     }

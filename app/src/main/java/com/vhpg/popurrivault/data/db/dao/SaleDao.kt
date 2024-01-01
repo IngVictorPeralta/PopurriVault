@@ -14,6 +14,8 @@ interface SaleDao {
     //Read
     @Query("SELECT * FROM ${Constants.DATABASE_SALES_TABLE}")
     suspend fun getAllSalesByClient(): List<SaleEntity>
+     @Query("SELECT * FROM ${Constants.DATABASE_SALES_TABLE}")
+    suspend fun getAllSales(): List<SaleEntity>
 
     //Update
     @Update

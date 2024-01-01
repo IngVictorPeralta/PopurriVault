@@ -59,17 +59,29 @@
             app:argType="com.vhpg.popurrivault.data.db.model.ProductEntity[]" />
     </fragment>
     <fragment
+        android:id="@+id/addSaleFragment"
+        android:name="com.vhpg.popurrivault.ui.AddSaleFragment"
+        android:label="AddSaleFragment" >
+        <argument
+            android:name="selectedProducts"
+            app:argType="com.vhpg.popurrivault.data.db.model.ProductEntity[]" />
+    </fragment>
+    <fragment
         android:id="@+id/selectProductsFragment"
         android:name="com.vhpg.popurrivault.ui.SelectProductsFragment"
         android:label="Selecciona productos" >
         <action
             android:id="@+id/action_selectProductsFragment_to_addOrderFragment"
             app:destination="@id/addOrderFragment"
-            app:popUpTo="@id/navigation_orders"
-            app:popUpToInclusive="false" />
+            app:popUpTo="@id/navigation_orders" />
         <argument
             android:name="typeSel"
             app:argType="string" />
+        <action
+            android:id="@+id/action_selectProductsFragment_to_addSaleFragment"
+            app:destination="@id/addSaleFragment"
+            app:popUpTo="@id/navigation_sales" />
     </fragment>
+
 
 </navigation>

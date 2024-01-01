@@ -13,6 +13,8 @@ interface OrderDao {
     //Read
     @Query("SELECT * FROM ${Constants.DATABASE_ORDERS_TABLE}")
     suspend fun getAllOrdersBySupplier(): List<OrderEntity>
+@Query("SELECT * FROM ${Constants.DATABASE_ORDERS_TABLE}")
+    suspend fun getAllOrders(): List<OrderEntity>
 
     //Update
     @Update

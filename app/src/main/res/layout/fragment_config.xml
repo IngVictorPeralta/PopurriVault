@@ -1,16 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.ConfigFragment">
+    android:layout_marginStart="0dp"
+    android:layout_marginTop="20dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginBottom="0dp"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tvPrueba"
+    <!-- Primer CheckBox -->
+    <CheckBox
+        android:id="@+id/notificaciones_checkbox"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/Config" />
+        android:layout_height="wrap_content"
+        android:text="notificaciones_checkbox"/>
 
-</FrameLayout>
+    <!-- Segundo CheckBox -->
+    <CheckBox
+        android:id="@+id/modo_avanzado_checkbox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="modo_avanzado_checkbox"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- Primer TextView -->
+            <TextView
+                android:id="@+id/Inversion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Inversion"/>
+
+            <!-- Segundo TextView -->
+            <TextView
+                android:id="@+id/Sales"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sales"/>
+
+            <!-- Tercer TextView -->
+            <TextView
+                android:id="@+id/Profit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profit"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- Primer TextView -->
+            <TextView
+                android:id="@+id/InversionK"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Inversion"/>
+
+            <!-- Segundo TextView -->
+            <TextView
+                android:id="@+id/SalesK"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Sales"/>
+
+            <!-- Tercer TextView -->
+            <TextView
+                android:id="@+id/ProfitK"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profit"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
+
+</RelativeLayout>

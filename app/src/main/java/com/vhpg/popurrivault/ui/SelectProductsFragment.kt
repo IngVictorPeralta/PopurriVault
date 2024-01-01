@@ -146,9 +146,14 @@ class SelectProductsFragment: Fragment() {
             }
             R.id.finish -> {
                 val arrayProductList: Array<ProductEntity> = selectedProducts.toTypedArray()
-
-                val action = SelectProductsFragmentDirections.actionSelectProductsFragmentToAddOrderFragment(arrayProductList)
-                findNavController().navigate(action)
+                if(typeSel == "ORDER"){
+                    val action = SelectProductsFragmentDirections.actionSelectProductsFragmentToAddOrderFragment(arrayProductList)
+                    findNavController().navigate(action)
+                }
+                if(typeSel == "SALE"){
+                    val action = SelectProductsFragmentDirections.actionSelectProductsFragmentToAddSaleFragment(arrayProductList)
+                    findNavController().navigate(action)
+                }
 
                 return true
             }
