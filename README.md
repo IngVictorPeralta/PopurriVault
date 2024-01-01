@@ -1,8 +1,8 @@
 Objetivo del app:
 El objetivo principal de la aplicación de inventarios para emprendedores es proporcionar una herramienta fácil de usar y eficiente que permita a los usuarios gestionar sus inventarios de manera efectiva. La aplicación busca optimizar el seguimiento de productos, la gestión de existencias y la generación de informes relacionados con el inventario, facilitando así la toma de decisiones y mejorando la eficiencia operativa de los emprendedores.
 
-Descripción del logo y lo que representa:
-Esta version solo es un tenis, dando a entender que puedes ocuparla para lo que quieras.
+Descripción del logo y lo que representa: 
+Esta version es una caja fuerte como lo dice el nombre Popurri Vault, dando a entender que puedes ocuparla para lo que quieras.
 
 
 Justificación de la elección del tipo de dispositivo, versión del sistema operativo y las orientaciones soportadas:
